@@ -1,0 +1,20 @@
+# This is how you can read the csv file content into dataframe
+
+diamods_df = spark.read.format("csv") \
+            .option("header", "true") \
+            .option("inferSchema", "true") \
+            .load("/databricks-datasets/Rdatasets/data-001/csv/ggplot2/diamonds.csv")
+
+diamods_df.show(10)
+
+# Average price of diamond based on color
+from pyspark.sql.functions import avg
+
+result_df = diamods_df.select("color", "price") \
+    .groupBy("color") \
+    .agg(avg("price")) \
+    .sort("color")
+result_df.show()
+
+# Number of records in dataframe.
+diamods_df.count()
